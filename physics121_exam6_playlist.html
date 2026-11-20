@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics 121 – Exam 6 Playlist</title>
+<style>
+  :root { --cream:#EBE2CC; --tan:#B7B09E; --ink:#1f1b14; --soft:#4a4437; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--cream); color:var(--ink); font:17px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
+  .wrap { max-width:680px; margin:0 auto; padding:40px 20px 60px; }
+  h1 { margin:0 0 4px; font-size:28px; letter-spacing:-.3px; }
+  .sub { margin:0 0 18px; color:var(--soft); }
+  .bar { height:8px; background:var(--tan); border-radius:99px; overflow:hidden; }
+  .bar div { height:100%; width:0; background:var(--ink); transition:width .25s; }
+  .count { margin:6px 0 24px; font-size:14px; color:var(--soft); }
+  h2 { margin:0 0 2px; font-size:21px; }
+  .hint { margin:0 0 12px; font-size:14.5px; color:var(--soft); }
+  hr { border:0; border-top:3px solid var(--tan); margin:36px 0 28px; }
+  .item { display:flex; align-items:center; gap:14px; background:var(--tan); border-radius:12px; padding:14px 16px; margin-bottom:10px; }
+  .item.done { opacity:.55; }
+  .num { font-weight:700; font-size:20px; width:26px; text-align:center; }
+  .txt { flex:1; min-width:0; }
+  .txt a { color:var(--ink); font-weight:600; text-decoration:underline; text-underline-offset:3px; }
+  .txt a:hover { text-decoration-thickness:2px; }
+  .topic { font-size:14px; color:#2e2a21; }
+  input { width:22px; height:22px; accent-color:var(--ink); cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Exam 6 playlist</h1>
+  <p class="sub">Physics 121 · rotation, statics, angular momentum.</p>
+  <div class="bar"><div id="fill"></div></div>
+  <div class="count" id="count"></div>
+
+  <h2>Part 1 · Concepts</h2>
+  <p class="hint">People explaining the ideas. Watch first, in order.</p>
+  <div id="concepts"></div>
+
+  <hr>
+
+  <h2>Part 2 · Worked problems</h2>
+  <p class="hint">People solving problems like the exam's. In the order the exam types show up.</p>
+  <div id="problems"></div>
+</div>
+<script>
+const concepts = [
+ ["84cGYXN-Hf8","Rotational Kinetic Energy, Moment of Inertia, & Torque","What moment of inertia is; K = ½Iω² and τ = Iα"],
+ ["OEHC2B13l-Q","Rotational KE, Moment of Inertia, Parallel-Axis Theorem","I for a rod about its end"],
+ ["Qb0wuGzck1Q","Rotational Dynamics: Torque and Angular Momentum","Torque, cross product, τ = Iα, statics (40+ min lecture)"],
+ ["v-J7WVuHjK0","Static Equilibrium","Free-body diagrams, torque, tension"],
+ ["hgcudPr73LU","Conservation of Angular Momentum (Paul Andersen)","When L is conserved; point and extended objects"],
+ ["Mcy4fVLHumI","Walter Lewin, 8.01 Lec 20: Angular Momentum","L as a vector, torque, conservation (full lecture)"],
+ ["Fk9HJ-zoUPs","Khan Academy: Ball Hits Rod","A particle on a straight line has L; rod collision"]
+];
+const problems = [
+ ["Qtp0Cb55yPI","Static Equilibrium: Beam on Two Supports, Person on Beam","Balance-beam problem"],
+ ["z4pd_K44QUo","Torque (11 of 13): Hanging Sign Static Equilibrium","Cable tension and hinge force on a beam"],
+ ["qGvFAl5CK_c","Static Equilibrium: Tension, Torque, Beam & Ladder Problems","More rod, hinge and cable practice"],
+ ["DzofJqIGcaY","Rotating Rod Released from Horizontal","ω at vertical"],
+ ["CsZnueIXYFE","Uniform Rod Hinged at Top, Released from Horizontal","Hinge force at vertical"],
+ ["447m35wW73M","Rod on a Smooth Horizontal Hinge: Angular Acceleration","α just after release"],
+ ["6tuAj3Wgr6w","Child Jumping on a Merry-Go-Round","Runner lands on a disk"],
+ ["XaWWKuf8QU4","Disk Dropped on a Rotating Disk","Final ω and energy lost"],
+ ["VGuiLI5CyQM","Clay Puck and Stick Collision","Block sticks to a pivoting rod"],
+ ["XO1XmwruSE0","Ball Hits Rod with Angular Momentum (AP Physics 1)","Another rod collision"],
+ ["hFXRpAiq9Jg","Conservation of Angular Momentum: Review Problems","Three mixed practice problems"]
+];
+let s = {};
+try { s = JSON.parse(localStorage.getItem("p121e6s2") || "{}"); } catch(e) {}
+const all = concepts.concat(problems);
+function render(arr, el){
+  arr.forEach(([id,t,topic],i) => {
+    const d = document.createElement("div");
+    d.className = "item" + (s[id] ? " done" : "");
+    d.innerHTML = '<div class="num">'+(i+1)+'</div><div class="txt"><a href="https://www.youtube.com/watch?v='+id+'" target="_blank" rel="noopener">'+t+'</a><div class="topic">'+topic+'</div></div><input type="checkbox" aria-label="Watched" '+(s[id]?'checked':'')+'>';
+    d.querySelector("input").onchange = e => {
+      s[id] = e.target.checked;
+      try { localStorage.setItem("p121e6s2", JSON.stringify(s)); } catch(x) {}
+      d.classList.toggle("done", e.target.checked); upd();
+    };
+    el.appendChild(d);
+  });
+}
+render(concepts, document.getElementById("concepts"));
+render(problems, document.getElementById("problems"));
+function upd(){
+  const n = all.filter(v => s[v[0]]).length;
+  document.getElementById("fill").style.width = (100*n/all.length)+"%";
+  document.getElementById("count").textContent = n+" of "+all.length+" watched";
+}
+upd();
+</script>
+</body>
+</html>
